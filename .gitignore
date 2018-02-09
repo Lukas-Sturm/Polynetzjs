@@ -57,3 +57,9 @@ typings/
 # dotenv environment variables file
 .env
 
+# IDE files
+.idea/
+.vscode/
+
+# OSx
+.DS_Store
