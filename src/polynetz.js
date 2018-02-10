@@ -1,4 +1,4 @@
-import { polysConnectInSameCell, drawPolyBalls, connectThemPolys, freezeUnderMouse, pushFromMouse, connectToMouse } from "./default-functions.js";
+import { polysConnectInSameCell, updateAllPolys, drawPolyBalls, connectThemPolys, freezeUnderMouse, pushFromMouse, connectToMouse } from "./default-functions.js";
 import Poly from "./poly.js";
 
 export default class Polynetz {
@@ -81,14 +81,6 @@ export default class Polynetz {
     }
   }
 
-  updateAllPolys() {
-    // Lokation und Grid aktualisieren
-    for (let poly of this.all_polys) {
-      poly.updateLocation();
-      poly.updateGridLocation();
-    }
-  }
-
   updateConfig(config) {
     if (config.poly) Object.assign(this.poly_config, config.poly);
     Object.assign(this.config, config);
@@ -141,26 +133,26 @@ export default class Polynetz {
       case "custom":
         return; // bei eigenem connectionMode Nichts machen
       case "connect_them_all":
-        this.addConnectionFunction("connect_all_polys", this.connectThemPolys);
+        this.addConnectionFunction("connect_all_polys", connectThemPolys);
         break;
     
       case "connect_them_all_and_mouse":
-        this.addConnectionFunction("connect_all_polys", this.connectThemPolys);          
-        this.addConnectionFunction("connect_to_mouse", this.connectToMouse);
+        this.addConnectionFunction("connect_all_polys", connectThemPolys);          
+        this.addConnectionFunction("connect_to_mouse", connectToMouse);
         break;
     
       case "connect_only_mouse":
-        this.addConnectionFunction("connect_to_mouse", this.connectToMouse);
+        this.addConnectionFunction("connect_to_mouse", connectToMouse);
         break;
 
       case "push_from_mouse":
-        this.addConnectionFunction("connect_all_polys", this.connectThemPolys);
-        this.addConnectionFunction("push_from_mouse", this.pushFromMouse);          
+        this.addConnectionFunction("connect_all_polys", connectThemPolys);
+        this.addConnectionFunction("push_from_mouse", pushFromMouse);          
         break;        
 
       case "freeze_under_mouse":
-        this.addConnectionFunction("connect_all_polys", this.connectThemPolys);
-        this.addConnectionFunction("freeze_under_mouse", this.freezeUnderMouse); 
+        this.addConnectionFunction("connect_all_polys", connectThemPolys);
+        this.addConnectionFunction("freeze_under_mouse", freezeUnderMouse); 
         break;
 
       default:
@@ -169,8 +161,8 @@ export default class Polynetz {
     }
 
     // braucht man immer
-    this.addConnectionFunction("update_all_polys", this.updateAllPolys);
-    this.addConnectionFunction("render_all_polys", this.drawPolyBalls);    
+    this.addConnectionFunction("update_all_polys", updateAllPolys);
+    this.addConnectionFunction("render_all_polys", drawPolyBalls);    
   }
 
   calcBlockSize() {

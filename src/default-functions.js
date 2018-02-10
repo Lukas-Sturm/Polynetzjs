@@ -16,6 +16,14 @@ export function polysConnectInSameCell() {
   this.ctx.stroke()
 }
 
+export function updateAllPolys() {
+  // Lokation und Grid aktualisieren
+  for (let poly of this.all_polys) {
+    poly.updateLocation();
+    poly.updateGridLocation();
+  }
+}
+
 export function drawPolyBalls() {
   // Poly zeichnen
   // Polys werden beim zeichnen nach Farbe gruppiert, das ermöglicht es die Drawcalls zu minimieren, da nicht jeder Poly einzeln gezeichnet werden muss.
