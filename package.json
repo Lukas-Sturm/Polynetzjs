@@ -4,11 +4,15 @@
   "description": "Library to create fancy meshes using a canvas",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack-dev-server"
   },
   "author": "Lukas S.",
   "license": "MIT",
   "devDependencies": {
-    "webpack": "^3.10.0"
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.1"
   }
 }
