@@ -1,10 +1,10 @@
 var path = require('path');
 
 module.exports = {
-    entry: './src/controller.js',
+    entry: './src/polynetz.js',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js',
+        filename: 'polynetz.js',
         publicPath: '/dist'
     },
     module: {

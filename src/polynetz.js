@@ -1,7 +1,7 @@
 import { polysConnectInSameCell, updateAllPolys, drawPolyBalls, connectThemPolys, freezeUnderMouse, pushFromMouse, connectToMouse } from "./default-functions.js";
 import Poly from "./poly.js";
 
-export default class Polynetz {
+class Polynetz {
   constructor(config) {
     // Variablen erstellen 
     this.poly_config = {}; this.config = {}; this.canvas = null; this.parent_object = null;

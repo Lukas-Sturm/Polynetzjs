@@ -1,7 +1,8 @@
-import Polynetz from "./polynetz.js";
+//import Polynetz from "./polynetz.js";
 
-let colors = ["#3444FF", "#FF2B25", "#B616E8", "#E8964C", "#FFE46A"];
-let polynetz = new Polynetz({
+var colors = ["#3444FF", "#FF2B25", "#B616E8", "#E8964C", "#FFE46A"];
+
+this.polynetz = new Polynetz({
 	background_color: "#222",
 	line_color: "tomato",
 	slices: 10,
@@ -35,10 +36,10 @@ window.onload = () => {
 }
 
 function init() {
-	polynetz.init();
+	this.polynetz.init();
 
-	polynetz.addEventlistener("click", evt => {
-		polynetz.addPoly({
+	this.polynetz.addEventlistener("click", evt => {
+		this.polynetz.addPoly({
 			x: evt.clientX, 
 			y: evt.clientY,
 		}, {
@@ -47,14 +48,14 @@ function init() {
 		});
 	});
 
-	polynetz.addEventlistener("reset", evt => {
+	this.polynetz.addEventlistener("reset", evt => {
 		console.log(`Cleared: ${evt.amount}`);
 		spawnBulk(100, {x: 200, y: 300}, true, false);
 	});
 
-	polynetz.start(30);
+	this.polynetz.start(30);
 
-	console.log(polynetz.getLoadedConnectionFunctions());
+	console.log(this.polynetz.getLoadedConnectionFunctions());
 }
 
 let getRandomColor = () => colors[Math.round(Math.random() *4)];
@@ -64,6 +65,6 @@ function spawnBulk(amount, randomColor, randomRadius) {
 	for (let i = 0; i < amount; i++) {
 		let radius = getRandomNumber(2, 6);
 		console.log(`Created Poly with Radius of ${radius}`);
-		polynetz.addPoly({x: 0, y:0 }, { color: randomColor ? getRandomColor() : "white", radius: randomRadius ? radius : 10 });
+		this.polynetz.addPoly({x: 0, y:0 }, { color: randomColor ? getRandomColor() : "white", radius: randomRadius ? radius : 10 });
 	}
 }
