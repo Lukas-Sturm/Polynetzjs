@@ -2,8 +2,12 @@ import Polynetz from "./polynetz.js";
 
 let colors = ["#3444FF", "#FF2B25", "#B616E8", "#E8964C", "#FFE46A"];
 
+window.onload = () => {
+	init();
+}
+
 function init() {
-	this.polynetz = new Polynetz({
+	const polynetz = new Polynetz({
 		background_color: "#222",
 		line_color: "tomato",
 		slices: 10,
