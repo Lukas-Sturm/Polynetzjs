@@ -1,7 +1,7 @@
 import { polysConnectInSameCell, updateAllPolys, drawPolyBalls, connectThemPolys, freezeUnderMouse, pushFromMouse, connectToMouse } from "./default-functions.js";
 import Poly from "./poly.js";
 
-class Polynetz {
+export default class Polynetz {
   constructor(config) {
     // Variablen erstellen 
     this.poly_config = {}; this.config = {}; this.canvas = null; this.parent_object = null;
@@ -297,23 +297,3 @@ class Polynetz {
     if (this.config.background_color) this.parent_object.style.backgroundColor = this.config.background_color;
   }
 }
-
-
-
-    /*
-    for (let spalte = 0; spalte < this.poly_netz.length; spalte++) {
-      for (let zeile = 0; zeile < this.poly_netz[spalte].length; zeile++) {
-        for (let poly of this.poly_netz[spalte][zeile]) {
-          
-        }
-      }
-    }
-
-    /*
-    this.poly_netz.forEach(spalte => {
-      spalte.forEach(zeile => {
-        zeile.forEach(poly => {
-        });
-      });
-    });
-    */

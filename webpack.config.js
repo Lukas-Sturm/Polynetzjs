@@ -1,11 +1,12 @@
 var path = require('path');
 
 module.exports = {
-    entry: './src/polynetz.js',
+    entry: './src/entry.js',
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'polynetz.js',
-        publicPath: '/dist'
+        publicPath: '/dist',
+        library: 'Polynetz'
     },
     module: {
         rules: [

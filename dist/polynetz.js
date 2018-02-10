@@ -1,3 +1,4 @@
+var Polynetz =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -70,11 +71,26 @@
 "use strict";
 
 
+module.exports = __webpack_require__(1).default;
+// keine Ahnung warum man das braucht
+// Wahrscheinlich weil Webpack richtig schön kompliziert sein muss DANKE DAFÜR
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _defaultFunctions = __webpack_require__(1);
+var _defaultFunctions = __webpack_require__(2);
 
-var _poly = __webpack_require__(2);
+var _poly = __webpack_require__(3);
 
 var _poly2 = _interopRequireDefault(_poly);
 
@@ -407,25 +423,10 @@ var Polynetz = function () {
   return Polynetz;
 }();
 
-/*
-for (let spalte = 0; spalte < this.poly_netz.length; spalte++) {
-  for (let zeile = 0; zeile < this.poly_netz[spalte].length; zeile++) {
-    for (let poly of this.poly_netz[spalte][zeile]) {
-      
-    }
-  }
-}
- /*
-this.poly_netz.forEach(spalte => {
-  spalte.forEach(zeile => {
-    zeile.forEach(poly => {
-    });
-  });
-});
-*/
+exports.default = Polynetz;
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -873,7 +874,7 @@ function connectToMouse() {
 }
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
