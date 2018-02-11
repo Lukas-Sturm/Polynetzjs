@@ -78,6 +78,8 @@ export default class Polynetz {
     for (let i = 0; i < this.connection_functions.length; i++) {
       this.connection_functions[i].c.bind(this)();
     }
+
+    window.requestAnimationFrame(this.update.bind(this));
   }
 
   updateConfig(config) {
@@ -194,13 +196,16 @@ export default class Polynetz {
 
   start(fps) {
     if (this.loop !== null) return;
-    this.loop = setInterval(() => {
-      this.update();
-    }, 1000 / fps || 30);
+    this.loop = window.requestAnimationFrame(this.update.bind(this));
+
+    //setInterval(() => {
+    //  this.update();
+    //}, 1000 / fps || 30);
   }
 
   stop() {
-    clearInterval(this.loop);
+    window.cancelAnimationFrame(this.loop);
+    //clearInterval(this.loop);
   }
 
   reset() {
