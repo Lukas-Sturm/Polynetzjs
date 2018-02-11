@@ -1,6 +1,6 @@
 //import Polynetz from "./polynetz.js";
 
-var colors = ["#3444FF", "#FF2B25", "#B616E8", "#E8964C", "#FFE46A"];
+let colors = ["#3444FF", "#FF2B25", "#B616E8", "#E8964C", "#FFE46A"];
 
 this.polynetz = new Polynetz({
 	background_color: "#222",
@@ -33,7 +33,7 @@ this.polynetz = new Polynetz({
 
 window.onload = () => {
 	init();
-}
+};
 
 function init() {
 	this.polynetz.init();
