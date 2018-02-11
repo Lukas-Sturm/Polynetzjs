@@ -105,10 +105,10 @@ var Polynetz = function () {
     // Variablen erstellen 
     this.poly_config = {};this.config = {};this.canvas = null;this.parent_object = null;
     this.poly_netz = null;this.width = 0;this.height = 0;this.all_polys = [];this.loop = null;
-    this.all_polys_by_color = {};this.reset_event_callback = function () {};this.grid_size = {};this.context = null;
+    this.all_polys_by_color = {};this.reset_event_callback = function () {};this.grid_size = {};
     this.mouse_location = { x: 0, y: 0 };this.canvas_bounding_rect = {};
 
-    this.connection_functions = {};
+    this.connection_functions = [];
 
     // Konfiguartion laden
     this.loadConfig(config || {});
@@ -177,9 +177,8 @@ var Polynetz = function () {
       }
 
       // führt alle aktivierten connection funktionen aus
-      for (var connection_name in this.connection_functions) {
-        if (this.connection_functions[connection_name] == null) continue;
-        this.connection_functions[connection_name].bind(this)();
+      for (var i = 0; i < this.connection_functions.length; i++) {
+        this.connection_functions[i].c.bind(this)();
       }
     }
   }, {
@@ -222,9 +221,10 @@ var Polynetz = function () {
           size_radius: 5,
           color: "#ff6347"
         }
+      };
 
-        // Poly konfig einspielen
-      };Object.assign(this.poly_config, default_config.poly, config.poly || {});
+      // Poly konfig einspielen
+      Object.assign(this.poly_config, default_config.poly, config.poly || {});
 
       // Configs zusammenfassen
       Object.assign(this.config, default_config, config);
@@ -232,31 +232,30 @@ var Polynetz = function () {
   }, {
     key: "loadConnectionFunctions",
     value: function loadConnectionFunctions() {
-
       switch (this.config.connection_mode) {
         case "custom":
           return; // bei eigenem connectionMode Nichts machen
         case "connect_them_all":
-          this.addConnectionFunction("connect_all_polys", _defaultFunctions.connectThemPolys);
+          this.addConnectionFunction("connect_all_polys", _defaultFunctions.connectThemPolys, 500);
           break;
 
         case "connect_them_all_and_mouse":
-          this.addConnectionFunction("connect_all_polys", _defaultFunctions.connectThemPolys);
-          this.addConnectionFunction("connect_to_mouse", _defaultFunctions.connectToMouse);
+          this.addConnectionFunction("connect_all_polys", _defaultFunctions.connectThemPolys, 500);
+          this.addConnectionFunction("connect_to_mouse", _defaultFunctions.connectToMouse, 510);
           break;
 
         case "connect_only_mouse":
-          this.addConnectionFunction("connect_to_mouse", _defaultFunctions.connectToMouse);
+          this.addConnectionFunction("connect_to_mouse", _defaultFunctions.connectToMouse, 500);
           break;
 
         case "push_from_mouse":
-          this.addConnectionFunction("connect_all_polys", _defaultFunctions.connectThemPolys);
-          this.addConnectionFunction("push_from_mouse", _defaultFunctions.pushFromMouse);
+          this.addConnectionFunction("connect_all_polys", _defaultFunctions.connectThemPolys, 500);
+          this.addConnectionFunction("push_from_mouse", _defaultFunctions.pushFromMouse, 510);
           break;
 
         case "freeze_under_mouse":
-          this.addConnectionFunction("connect_all_polys", _defaultFunctions.connectThemPolys);
-          this.addConnectionFunction("freeze_under_mouse", _defaultFunctions.freezeUnderMouse);
+          this.addConnectionFunction("connect_all_polys", _defaultFunctions.connectThemPolys, 500);
+          this.addConnectionFunction("freeze_under_mouse", _defaultFunctions.freezeUnderMouse, 510);
           break;
 
         default:
@@ -265,8 +264,8 @@ var Polynetz = function () {
       }
 
       // braucht man immer
-      this.addConnectionFunction("update_all_polys", _defaultFunctions.updateAllPolys);
-      this.addConnectionFunction("render_all_polys", _defaultFunctions.drawPolyBalls);
+      this.addConnectionFunction("update_all_polys", _defaultFunctions.updateAllPolys, 1000);
+      this.addConnectionFunction("render_all_polys", _defaultFunctions.drawPolyBalls, 1);
     }
   }, {
     key: "calcBlockSize",
@@ -291,9 +290,9 @@ var Polynetz = function () {
   }, {
     key: "initPolyNetz",
     value: function initPolyNetz() {
-      this.poly_netz = Array(this.blocksize_width);
+      this.poly_netz = new Array(this.blocksize_width);
       for (var i = 0; i < this.poly_netz.length; i++) {
-        this.poly_netz[i] = Array(this.blocksize_height);
+        this.poly_netz[i] = new Array(this.blocksize_height);
         for (var j = 0; j < this.poly_netz[0].length; j++) {
           this.poly_netz[i][j] = [];
         }
@@ -305,6 +304,7 @@ var Polynetz = function () {
     value: function start(fps) {
       var _this = this;
 
+      if (this.loop !== null) return;
       this.loop = setInterval(function () {
         _this.update();
       }, 1000 / fps || 30);
@@ -339,15 +339,38 @@ var Polynetz = function () {
     }
   }, {
     key: "addConnectionFunction",
-    value: function addConnectionFunction(name, function_callback) {
-      this.connection_functions[name] = function_callback;
+    value: function addConnectionFunction(name, function_callback, prio) {
+      prio = prio || 500;
+
+      for (var i = 0; i < this.connection_functions.length; i++) {
+        if (this.connection_functions[i].p < prio) {
+          // Platz gefunden, einfügen
+          this.connection_functions.splice(i, 0, {
+            n: name,
+            c: function_callback,
+            p: prio
+          });
+          // AUS DER FUNKTION SPRINGEN
+          return;
+        }
+      }
+
+      // Kein insertpunkt gefunden
+      this.connection_functions.push({
+        n: name,
+        c: function_callback,
+        p: prio
+      });
     }
   }, {
     key: "removeConnectionFunction",
     value: function removeConnectionFunction(name) {
-      var temp_function = this.connection_functions[name];
-      this.connection_functions[name] = null;
-      return temp_function;
+      for (var i = 0; i < this.connection_functions.length; i++) {
+        if (this.connection_functions[i].n === name) {
+          this.connection_functions.splice(i, 1);
+          return;
+        }
+      }
     }
   }, {
     key: "getLoadedConnectionFunctions",
@@ -355,16 +378,11 @@ var Polynetz = function () {
       return this.connection_functions;
     }
   }, {
-    key: "getAvailableConnectionFunctions",
-    value: function getAvailableConnectionFunctions() {
-      return ["connect_to_mouse", "polys_same_cell", "update_all_polys"];
-    }
-  }, {
     key: "findElementToAttachTo",
     value: function findElementToAttachTo(parent_object) {
       parent_object = parent_object || "polynetz";
       // Überprüfen ob parent_object ein String also die ID oder ein Object also direkt die Node ist
-      if (typeof parent_object == "string") {
+      if (typeof parent_object === "string") {
         this.parent_object = document.getElementById(parent_object);
         // Überprüfen ob überhaupt ein Element gefunden wurde
         if (!this.parent_object) {
@@ -913,7 +931,7 @@ var Poly = function () {
       if (poly_netz_y < 0) poly_netz_y = 0;
       if (poly_netz_y > this.grid_size.height - 1) poly_netz_x = this.grid_size.height - 1;
 
-      if (this.grid_location.gx != poly_netz_x || this.grid_location.gy != poly_netz_y) {
+      if (this.grid_location.gx !== poly_netz_x || this.grid_location.gy !== poly_netz_y) {
         // Item aus altem Grid Abschnitt entfernen
         for (var i = 0; i < this.polynetz.poly_netz[this.grid_location.gx][this.grid_location.gy].length; i++) {
           if (this.polynetz.poly_netz[this.grid_location.gx][this.grid_location.gy][i] === this) {
