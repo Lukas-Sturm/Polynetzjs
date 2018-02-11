@@ -19,7 +19,7 @@ export default class Poly {
     if (poly_netz_y < 0) poly_netz_y = 0;
     if (poly_netz_y > this.grid_size.height - 1) poly_netz_x = this.grid_size.height - 1;
 
-    if (this.grid_location.gx != poly_netz_x || this.grid_location.gy != poly_netz_y) {
+    if (this.grid_location.gx !== poly_netz_x || this.grid_location.gy !== poly_netz_y) {
       // Item aus altem Grid Abschnitt entfernen
       for (let i = 0; i < this.polynetz.poly_netz[this.grid_location.gx][this.grid_location.gy].length; i++) {
         if (this.polynetz.poly_netz[this.grid_location.gx][this.grid_location.gy][i] === this) {
