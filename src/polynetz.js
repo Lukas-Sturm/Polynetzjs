@@ -194,13 +194,9 @@ export default class Polynetz {
     this.grid_size = {width: this.poly_netz.length, height: this.poly_netz[0].length };
   }
 
-  start(fps) {
+  start() {
     if (this.loop !== null) return;
     this.loop = window.requestAnimationFrame(this.update.bind(this));
-
-    //setInterval(() => {
-    //  this.update();
-    //}, 1000 / fps || 30);
   }
 
   stop() {

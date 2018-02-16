@@ -5,11 +5,11 @@ let colors = ["#3444FF", "#FF2B25", "#B616E8", "#E8964C", "#FFE46A"];
 this.polynetz = new Polynetz({
 	background_color: "#222",
 	line_color: "tomato",
-	slices: 10,
-	connection_radius: 100,
+	slices: 30,
+	connectio_radius: 100,
 	max_connection_radius: 150,
 	connection_mode: "freeze_under_mouse",
-	render_poly: true,
+	render_poly: false,
 	freeze_multiplier: 0.75,
 	mouse: {
 		push_radius: 100,
@@ -18,7 +18,7 @@ this.polynetz = new Polynetz({
 		color: "white",	
 	},
 	debug: {
-		grid: false,
+		grid: true,
 		connection_radius: false,
 		render_connection_grid: false,
 		render_push_radius: false,
@@ -53,7 +53,7 @@ function init() {
 		spawnBulk(100, {x: 200, y: 300}, true, false);
 	});
 
-	this.polynetz.start(30);
+	this.polynetz.start();
 
 	console.log(this.polynetz.getLoadedConnectionFunctions());
 }
@@ -65,6 +65,6 @@ function spawnBulk(amount, randomColor, randomRadius) {
 	for (let i = 0; i < amount; i++) {
 		let radius = getRandomNumber(2, 6);
 		console.log(`Created Poly with Radius of ${radius}`);
-		this.polynetz.addPoly({x: 0, y:0 }, { color: randomColor ? getRandomColor() : "white", radius: randomRadius ? radius : 10 });
+		this.polynetz.addPoly({x: getRandomNumber(0, this.polynetz.width), y: getRandomNumber(0, this.polynetz.height)}, { color: randomColor ? getRandomColor() : "white", radius: randomRadius ? radius : 10 });
 	}
 }
