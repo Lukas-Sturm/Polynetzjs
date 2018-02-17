@@ -8,7 +8,9 @@ export default class Animation_Loop {
   }
 
   setFPS(fps) {
-    this.constructor(fps, this.callback);
+    this.delay = 1000 / fps;
+    this.time = -1;
+    this.frame = -1;
   }
 
   loop(timestamp) {
@@ -30,7 +32,7 @@ export default class Animation_Loop {
 
   stop() {
     cancelAnimationFrame(this.tref);
-    this.time = null;
+    this.time = -1;
     this.frame = -1;
   }
 }
