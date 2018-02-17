@@ -1,11 +1,13 @@
 import { polysConnectInSameCell, updateAllPolys, drawPolyBalls, connectThemPolys, freezeUnderMouse, pushFromMouse, connectToMouse } from "./default-functions.js";
+import Animation_Loop from "./animation-loop.js";
 import Poly from "./poly.js";
 
 export default class Polynetz {
   constructor(config) {
-    // Variablen erstellen 
+    // Variablen erstellen
+    this.loop = new Animation_Loop(this.update.bind(this), 30);
     this.poly_config = {}; this.config = {}; this.canvas = null; this.parent_object = null;
-    this.poly_netz = null; this.width = 0; this.height = 0; this.all_polys = []; this.loop = null;
+    this.poly_netz = null; this.width = 0; this.height = 0; this.all_polys = [];
     this.all_polys_by_color = {}; this.reset_event_callback = function() {}; this.grid_size = {};
     this.mouse_location = {x: 0, y: 0}; this.canvas_bounding_rect = {};
 
@@ -78,8 +80,6 @@ export default class Polynetz {
     for (let i = 0; i < this.connection_functions.length; i++) {
       this.connection_functions[i].c.bind(this)();
     }
-
-    window.requestAnimationFrame(this.update.bind(this));
   }
 
   updateConfig(config) {
@@ -195,12 +195,14 @@ export default class Polynetz {
   }
 
   start() {
-    if (this.loop !== null) return;
-    this.loop = window.requestAnimationFrame(this.update.bind(this));
+    this.loop.start();
+    //if (this.loop !== null) return;
+    //this.loop = window.requestAnimationFrame(this.update.bind(this));
   }
 
   stop() {
-    window.cancelAnimationFrame(this.loop);
+    this.loop.stop();
+    //window.cancelAnimationFrame(this.loop);
     //clearInterval(this.loop);
   }
 
