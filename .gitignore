@@ -63,3 +63,6 @@ typings/
 
 # OSx
 .DS_Store
+
+# Webpack output
+dist/
