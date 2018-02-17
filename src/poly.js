@@ -43,14 +43,30 @@ export default class Poly {
     if (newLocation) {
       this.location = newLocation;
     } else {
-      this.location.x += this.velocity.vx * this.config.speed_multiplikator;
-      this.location.y += this.velocity.vy * this.config.speed_multiplikator;    
-    
-      // Überlauf (Elemente werden nicht Teleportiert wenn sie erst zur hälfte nicht mehr sichtbar sind)
-      if (this.location.x > this.polynetz.width + this.config.size_radius  ) { this.updateLocation({y: this.location.y, x: 0 - this.config.size_radius           }) } else
-      if (this.location.x < 0 - this.config.size_radius           ) { this.updateLocation({y: this.location.y, x: this.polynetz.width + this.config.size_radius  }) } else
-      if (this.location.y > this.polynetz.height + this.config.size_radius ) { this.updateLocation({x: this.location.x, y: 0 - this.config.size_radius           }) } else
-      if (this.location.y < 0 - this.config.size_radius           ) { this.updateLocation({x: this.location.x, y: this.polynetz.height + this.config.size_radius }) }
+
+      if (this.config.bounce) {
+        // von Wänden abprallen
+        if (this.location.x > this.polynetz.width - this.config.size_radius  ) { this.velocity.vx *= -1 } else
+        if (this.location.x < this.config.size_radius           ) { this.velocity.vx *= -1 } else
+        if (this.location.y > this.polynetz.height - this.config.size_radius ) { this.velocity.vy *= -1 } else
+        if (this.location.y < this.config.size_radius           ) { this.velocity.vy *= -1 }
+
+
+        this.location.x += this.velocity.vx * this.config.speed_multiplikator;
+        this.location.y += this.velocity.vy * this.config.speed_multiplikator;
+
+      } else {
+
+        // Nicht bouncen
+        this.location.x += this.velocity.vx * this.config.speed_multiplikator;
+        this.location.y += this.velocity.vy * this.config.speed_multiplikator;
+
+        // Überlauf (Elemente werden nicht Teleportiert wenn sie erst zur hälfte nicht mehr sichtbar sind)
+        if (this.location.x > this.polynetz.width + this.config.size_radius  ) { this.updateLocation({y: this.location.y, x: 0 - this.config.size_radius           }) } else
+        if (this.location.x < 0 - this.config.size_radius           ) { this.updateLocation({y: this.location.y, x: this.polynetz.width + this.config.size_radius  }) } else
+        if (this.location.y > this.polynetz.height + this.config.size_radius ) { this.updateLocation({x: this.location.x, y: 0 - this.config.size_radius           }) } else
+        if (this.location.y < 0 - this.config.size_radius           ) { this.updateLocation({x: this.location.x, y: this.polynetz.height + this.config.size_radius }) }
+      }
     }
   }
 }

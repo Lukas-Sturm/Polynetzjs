@@ -118,6 +118,7 @@ export default class Polynetz {
         speed_multiplikator: 1,
         size_radius: 5,
         color: "#ff6347",
+        bounce: false,
       },
     };
 
