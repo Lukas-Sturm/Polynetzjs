@@ -6,10 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">      
     <script src="./dist/polynetz.js"></script> 
     <script src="./index.js"></script>
-    <style>body {margin: 0; padding: 0;} .polynetz {width: 1200px; height: 900px;}</style>
+    <style>body {margin: 0; padding: 0;}
+      .polynetz {
+        z-index: -999;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+      }
+      .heading {
+        text-align: center;
+        font-size: 2em;
+        background-color: blanchedalmond;
+      }
+    </style>
   </head>
   
   <body>
     <div id="polynetz" class="polynetz"></div>
+
+    <h1 class="heading">Polynetz</h1>
+
   </body>
 </html>

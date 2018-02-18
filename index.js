@@ -5,10 +5,10 @@ let colors = ["#3444FF", "#FF2B25", "#B616E8", "#E8964C", "#FFE46A"];
 this.polynetz = new Polynetz({
 	background_color: "#222",
 	line_color: "tomato",
-	slices: 30,
+	slices: 10,
 	connectio_radius: 100,
 	max_connection_radius: 150,
-	connection_mode: "push_from_mouse",
+	connection_mode: "connect_only_mouse",
 	render_poly: false,
 	freeze_multiplier: 0.75,
 	mouse: {
@@ -22,7 +22,7 @@ this.polynetz = new Polynetz({
 		connection_radius: false,
 		render_connection_grid: false,
 		render_push_radius: false,
-		render_freze_radius: false,
+		render_freeze_radius: false,
 	},
 	poly: {
 		speed_multiplikator: 3,
