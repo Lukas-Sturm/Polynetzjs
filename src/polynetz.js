@@ -91,7 +91,7 @@ export default class Polynetz {
   loadConfig(config) {
     let default_config = {
       background_color: "#222",
-      line_color: "white",
+      connection_color: "255,255,255",
       slices: 10,
       connection_radius: 100,
       max_connection_radius: 200,
@@ -121,6 +121,13 @@ export default class Polynetz {
         bounce: false,
       },
     };
+
+    // Some Validation
+    let r = /(\d{1,3},){2}\d{1,3}$/
+    if (!r.test(config.connection_color)) {
+      console.error("Wrong connection_color Format");
+      config.connection_color = "255,255,255"
+    }
 
     // Poly konfig einspielen
     Object.assign(this.poly_config, default_config.poly, config.poly || {});

@@ -1,7 +1,7 @@
 export function polysConnectInSameCell() {
   // Verbinder zeichnen
   // Style setzen für die Linien
-  this.ctx.strokeStyle = this.config.line_color;
+  this.ctx.strokeStyle = this.config.connection_color;
   this.ctx.beginPath();
   for (let spalte = 0; spalte < this.poly_netz.length; spalte++) {
     for (let zeile = 0; zeile < this.poly_netz[spalte].length; zeile++) {
@@ -75,7 +75,11 @@ export function connectThemPolys() {
             this.ctx.lineTo(poly.location.x, poly.location.y);
 
             // Transparenz kalkulieren
-            this.ctx.strokeStyle = "rgba(255,255,255," + (0.65 - range / this.config.max_connection_radius) + ")";
+            if (this.config.connection_is_transparent) {
+              this.ctx.strokeStyle = "rgba("+ this.config.connection_color +"," + (0.65 - range / this.config.max_connection_radius) + ")";
+            } else {
+              this.ctx.strokeStyle = "rgba("+ this.config.connection_color + ")";
+            }
 
             this.ctx.stroke();
           }

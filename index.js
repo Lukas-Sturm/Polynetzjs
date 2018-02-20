@@ -4,13 +4,14 @@ let colors = ["#3444FF", "#FF2B25", "#B616E8", "#E8964C", "#FFE46A"];
 
 this.polynetz = new Polynetz({
 	background_color: "#222",
-	line_color: "tomato",
+	connection_color: "255,99,71",
 	slices: 10,
-	connectio_radius: 100,
+	connection_radius: 100,
 	max_connection_radius: 150,
-	connection_mode: "connect_only_mouse",
+	connection_mode: "freeze_under_mouse",
+	connection_is_transparent: true,
 	render_poly: false,
-	freeze_multiplier: 0.75,
+	freeze_multiplier: 100,
 	mouse: {
 		push_radius: 100,
 		freeze_radius: 100,
@@ -18,7 +19,7 @@ this.polynetz = new Polynetz({
 		color: "white",	
 	},
 	debug: {
-		grid: true,
+		grid: false,
 		connection_radius: false,
 		render_connection_grid: false,
 		render_push_radius: false,
@@ -54,6 +55,7 @@ function init() {
 		spawnBulk(100, {x: 200, y: 300}, true, false);
 	});
 
+	spawnBulk(200);
 	this.polynetz.start();
 
 	console.log(this.polynetz.getLoadedConnectionFunctions());
