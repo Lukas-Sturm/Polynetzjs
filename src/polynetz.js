@@ -187,8 +187,15 @@ export default class Polynetz {
     this.calcBlockSize();
     this.styleParentObject();
     this.initPolyNetz();
-    console.log("Created Polynetz");
+    console.log("Created Polynetz :)");
     console.log(this);
+  }
+
+  updateSize() {
+    this.updateCanvas();
+    this.calcBlockSize();
+    // Egal ob Animation gerade aktiv ist update sollte einmal aufgerufen werden
+    this.update.bind(this)();
   }
 
   initPolyNetz() {
@@ -225,12 +232,10 @@ export default class Polynetz {
   }
 
   addEventlistener(event_name, callback) {
-
     if (event_name === "reset") {
       this.reset_event_callback = callback;
       return;
     }
-
     // einfach weiter geben
     this.canvas.addEventListener(event_name, callback);
   }
@@ -295,8 +300,8 @@ export default class Polynetz {
     // Canvas erstellen Attribute setzen und Context abrufen
     this.canvas = document.createElement("canvas");
     this.canvas.setAttribute("style", "width: 100%; height: 100%");
-    this.canvas.setAttribute("width", String(this.width));    
-    this.canvas.setAttribute("height", String(this.height));    
+    this.canvas.setAttribute("width", String(this.width));
+    this.canvas.setAttribute("height", String(this.height));
     this.canvas.setAttribute("id", "polynetz_canvas");
     this.ctx = this.canvas.getContext("2d");
     // Canvas platzieren
@@ -320,6 +325,22 @@ export default class Polynetz {
 
       this.canvas_bounding_rect = temp_rec;
     });
+
+    // Resize Event
+    // Wichtig: Es handelt sich um ein Window Event NICHT Document
+    window.addEventListener("resize", evt => {
+      console.log("Update Size");
+      this.updateSize();
+    });
+  }
+
+  updateCanvas() {
+    this.width = this.parent_object.scrollWidth;
+    this.height = this.parent_object.scrollHeight;
+
+    // Größe anpassen
+    this.canvas.setAttribute("width", String(this.width));
+    this.canvas.setAttribute("height", String(this.height));
   }
 
   styleParentObject() {
