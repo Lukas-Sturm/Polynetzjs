@@ -91,21 +91,20 @@ export default class Polynetz {
   loadConfig(config) {
     let default_config = {
       background_color: "#222",
+      background_is_gradient: false,
       connection_color: "255,255,255",
       slices: 10,
       connection_radius: 100,
       max_connection_radius: 200,
       connection_mode: "connect_them_all",
-      //connection_mode: "connect_them_all_and_mouse",
-      //connection_mode: "connect_only_mouse",
-      //connect_to_mouse: false,
-      //only_connect_to_mouse: false,
+      connection_is_transparent: false,
       render_poly: true,
       freeze_multiplier: 1,
       debug: {
         grid: false,
         connection_radius: false,
         render_connection_grid: false,
+        render_push_radius: false,
         render_freeze_radius: false,
       },
       mouse: {
@@ -181,7 +180,7 @@ export default class Polynetz {
   }
 
   init(element) {
-    if (!this.findElementToAttachTo(element)) return;
+    if (!this.findElementToAttachTo(element)) return false;
     this.loadConnectionFunctions();
     this.createCanvas();
     this.calcBlockSize();
@@ -189,6 +188,7 @@ export default class Polynetz {
     this.initPolyNetz();
     console.log("Created Polynetz :)");
     console.log(this);
+    return true;
   }
 
   updateSize() {
@@ -344,6 +344,10 @@ export default class Polynetz {
   }
 
   styleParentObject() {
-    if (this.config.background_color) this.parent_object.style.backgroundColor = this.config.background_color;
+    if (this.config.background_is_gradient) {
+      this.parent_object.style.background = this.config.background_color;
+    } else {
+      this.parent_object.style.backgroundColor = this.config.background_color;
+    }
   }
 }
