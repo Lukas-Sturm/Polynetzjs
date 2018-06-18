@@ -46,10 +46,17 @@ export default class Poly {
 
       if (this.config.bounce) {
         // von Wänden abprallen
-        if (this.location.x > this.polynetz.width - this.config.size_radius  ) { this.velocity.vx *= -1 } else
-        if (this.location.x < this.config.size_radius           ) { this.velocity.vx *= -1 } else
-        if (this.location.y > this.polynetz.height - this.config.size_radius ) { this.velocity.vy *= -1 } else
-        if (this.location.y < this.config.size_radius           ) { this.velocity.vy *= -1 }
+        if (this.location.x > this.polynetz.width - this.config.size_radius  ) { 
+          this.velocity.vx *= -1;
+          this.location.x = this.polynetz.width - this.config.size_radius;
+        } else if (this.location.x < this.config.size_radius) {
+          this.velocity.vx *= -1
+        } else if (this.location.y > this.polynetz.height - this.config.size_radius ) {
+          this.velocity.vy *= -1
+          this.location.y = this.polynetz.height - this.config.size_radius
+        } else if (this.location.y < this.config.size_radius) { 
+          this.velocity.vy *= -1
+        }
 
 
         this.location.x += this.velocity.vx * this.config.speed_multiplikator;
