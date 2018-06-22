@@ -95,7 +95,6 @@ export default class Polynetz {
       connection_color: "255,255,255",
       slices: 10,
       connection_radius: 100,
-      max_connection_radius: 200,
       connection_mode: "connect_them_all",
       connection_is_transparent: false,
       render_poly: true,

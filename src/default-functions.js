@@ -44,8 +44,8 @@ export function drawPolyBalls() {
 }
 
 export function connectThemPolys() {
-  let block_range_width = Math.floor(this.config.max_connection_radius / this.blocksize_width);
-  let block_range_height = Math.floor(this.config.max_connection_radius / this.blocksize_height);
+  let block_range_width = Math.floor(this.config.connection_radius / this.blocksize_width);
+  let block_range_height = Math.floor(this.config.connection_radius / this.blocksize_height);
 
 
   for (let all_polys_poly of this.all_polys) {
@@ -68,7 +68,7 @@ export function connectThemPolys() {
       for (let x = left; x < right; x++) {
         for (let poly of this.poly_netz[x][y]) {
           let range = Math.sqrt(Math.pow((poly.location.x - all_polys_poly.location.x), 2) + Math.pow((poly.location.y - all_polys_poly.location.y), 2));
-          if (this.config.max_connection_radius > range) {
+          if (range < this.config.connection_radius) {
             this.ctx.beginPath();
 
             this.ctx.moveTo(all_polys_poly.location.x, all_polys_poly.location.y);
@@ -76,7 +76,7 @@ export function connectThemPolys() {
 
             // Transparenz kalkulieren
             if (this.config.connection_is_transparent) {
-              this.ctx.strokeStyle = "rgba("+ this.config.connection_color +"," + (0.65 - range / this.config.max_connection_radius) + ")";
+              this.ctx.strokeStyle = "rgba("+ this.config.connection_color + "," + (1 - range / this.config.connection_radius) + ")";
             } else {
               this.ctx.strokeStyle = "rgba("+ this.config.connection_color + ")";
             }
@@ -183,8 +183,8 @@ export function  connectToMouse() {
   let poly_netz_x = Math.floor(this.mouse_location.x / this.blocksize_width);
   let poly_netz_y = Math.floor(this.mouse_location.y / this.blocksize_height);
 
-  let block_range_width = Math.floor(this.config.max_connection_radius / this.blocksize_width);
-  let block_range_height = Math.floor(this.config.max_connection_radius / this.blocksize_height);
+  let block_range_width = Math.floor(this.config.connection_radius / this.blocksize_width);
+  let block_range_height = Math.floor(this.config.connection_radius / this.blocksize_height);
 
   let left = poly_netz_x - block_range_width - 1;
   let right = poly_netz_x + block_range_width + 2; // +1 wegen der sonst ungerade anzahl
@@ -198,7 +198,7 @@ export function  connectToMouse() {
 
   if (this.config.debug.render_connection_grid) {
     this.ctx.beginPath();
-    this.ctx.arc(this.mouse_location.x, this.mouse_location.y, this.config.max_connection_radius, 0, 2 * Math.PI);
+    this.ctx.arc(this.mouse_location.x, this.mouse_location.y, this.config.connection_radius, 0, 2 * Math.PI);
     //this.ctx.rect(left * this.blocksize_width, top * this.blocksize_height, (right - left) * this.blocksize_width, (bottom - top) * this.blocksize_height);
     this.ctx.fillStyle = "rgba(0,255,0,0.25)";
     this.ctx.fill();
@@ -213,14 +213,14 @@ export function  connectToMouse() {
     for (let x = left; x < right; x++) {
       for (let poly of this.poly_netz[x][y]) {
         let range = Math.sqrt(Math.pow((poly.location.x - this.mouse_location.x), 2) + Math.pow((poly.location.y - this.mouse_location.y), 2));
-        if (this.config.max_connection_radius > range) {
+        if (this.config.connection_radius > range) {
           this.ctx.beginPath();
 
           this.ctx.moveTo(this.mouse_location.x, this.mouse_location.y);
           this.ctx.lineTo(poly.location.x, poly.location.y);
 
           // Transparenz kalkulieren
-          this.ctx.strokeStyle = "rgba(255,255,255," + (0.65 - range / this.config.max_connection_radius) + ")";
+          this.ctx.strokeStyle = "rgba(255,255,255," + (1 - range / this.config.connection_radius) + ")";
 
           this.ctx.stroke();
         }
