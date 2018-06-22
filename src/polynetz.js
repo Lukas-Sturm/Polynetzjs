@@ -195,7 +195,16 @@ export default class Polynetz {
     this.updateCanvas();
     this.calcBlockSize();
     // Egal ob Animation gerade aktiv ist update sollte einmal aufgerufen werden
-    //this.update.bind(this)();
+    this.redraw();
+  }
+
+  redraw() {
+    for (let i = 0; i < this.connection_functions.length; i++) {
+      // Connectionfunction neu ausführen aber nicht die Polys updaten
+      if (this.connection_functions[i].n !== "update_all_polys") {
+        this.connection_functions[i].c.bind(this)();
+      }
+    }
   }
 
   initPolyNetz() {
