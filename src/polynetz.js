@@ -6,6 +6,7 @@ export default class Polynetz {
   constructor(config) {
     // Variablen erstellen
     this.loop = new Animation_Loop(this.update.bind(this), 30);
+
     this.poly_config = {}; this.config = {}; this.canvas = null; this.parent_object = null;
     this.poly_netz = null; this.width = 0; this.height = 0; this.all_polys = [];
     this.all_polys_by_color = {}; this.reset_event_callback = function() {}; this.grid_size = {};
@@ -82,10 +83,135 @@ export default class Polynetz {
     }
   }
 
+  //#region Steuerung Funktionen
+
+  start() {
+    this.loop.start();
+    //if (this.loop !== null) return;
+    //this.loop = window.requestAnimationFrame(this.update.bind(this));
+  }
+
+  stop() {
+    this.loop.stop();
+    //window.cancelAnimationFrame(this.loop);
+    //clearInterval(this.loop);
+  }
+
+  reset() {
+    let evt = {amount: this.all_polys.length};
+
+    this.all_polys = [];
+    this.all_polys_by_color = {};
+    this.initPolyNetz();
+
+    this.reset_event_callback(evt);
+  }
+
+  addEventlistener(event_name, callback) {
+    if (event_name === "reset") {
+      this.reset_event_callback = callback;
+      return;
+    }
+    // einfach weiter geben
+    this.canvas.addEventListener(event_name, callback);
+  }
+
   updateConfig(config) {
     if (config.poly) Object.assign(this.poly_config, config.poly);
     Object.assign(this.config, config);
     this.styleParentObject();
+  }
+
+  //#endregion
+
+  //#region ConnectionFunctions
+  addConnectionFunction(name, function_callback, prio) {
+    prio = prio || 500;
+
+    for (let i = 0; i < this.connection_functions.length; i++) {
+      if (this.connection_functions[i].p < prio) {
+        // Platz gefunden, einfügen
+        this.connection_functions.splice(i, 0, {
+          n: name,
+          c: function_callback,
+          p: prio,
+        });
+        // AUS DER FUNKTION SPRINGEN
+        return;
+      }
+    }
+
+    // Kein insertpunkt gefunden
+    this.connection_functions.push({
+      n: name,
+      c: function_callback,
+      p: prio,
+    });
+  }
+
+  removeConnectionFunction(name) {
+    for (let i = 0; i < this.connection_functions.length; i++) {
+      if (this.connection_functions[i].n === name) {
+        this.connection_functions.splice(i, 1);
+        return;
+      }
+    }
+  }
+
+  getLoadedConnectionFunctions() {
+    return this.connection_functions;
+  }
+  //#endregion
+
+  //#region Setup
+
+  init(element) {
+    if (!this.findElementToAttachTo(element)) return false;
+    this.loadConnectionFunctions();
+    this.createCanvas();
+    this.calcBlockSize();
+    this.styleParentObject();
+    this.initPolyNetz();
+    console.log("Created Polynetz :)");
+    console.log(this);
+    return true;
+  }
+
+  loadConnectionFunctions() {
+    switch (this.config.connection_mode) {
+      case "custom":
+        return; // bei eigenem connectionMode Nichts machen
+      case "connect_them_all":
+        this.addConnectionFunction("connect_all_polys", connectThemPolys, 500);
+        break;
+    
+      case "connect_them_all_and_mouse":
+        this.addConnectionFunction("connect_all_polys", connectThemPolys, 500);
+        this.addConnectionFunction("connect_to_mouse", connectToMouse, 510);
+        break;
+    
+      case "connect_only_mouse":
+        this.addConnectionFunction("connect_to_mouse", connectToMouse, 500);
+        break;
+
+      case "push_from_mouse":
+        this.addConnectionFunction("connect_all_polys", connectThemPolys, 500);
+        this.addConnectionFunction("push_from_mouse", pushFromMouse, 510);
+        break;        
+
+      case "freeze_under_mouse":
+        this.addConnectionFunction("connect_all_polys", connectThemPolys, 500);
+        this.addConnectionFunction("freeze_under_mouse", freezeUnderMouse, 510);
+        break;
+
+      default:
+        console.error("Connectionmode undefined");
+        return;
+    }
+
+    // braucht man immer
+    this.addConnectionFunction("update_all_polys", updateAllPolys, 1000);
+    this.addConnectionFunction("render_all_polys", drawPolyBalls, 1);
   }
 
   loadConfig(config) {
@@ -134,78 +260,6 @@ export default class Polynetz {
     Object.assign(this.config, default_config, config);
   }
 
-  loadConnectionFunctions() {
-    switch (this.config.connection_mode) {
-      case "custom":
-        return; // bei eigenem connectionMode Nichts machen
-      case "connect_them_all":
-        this.addConnectionFunction("connect_all_polys", connectThemPolys, 500);
-        break;
-    
-      case "connect_them_all_and_mouse":
-        this.addConnectionFunction("connect_all_polys", connectThemPolys, 500);
-        this.addConnectionFunction("connect_to_mouse", connectToMouse, 510);
-        break;
-    
-      case "connect_only_mouse":
-        this.addConnectionFunction("connect_to_mouse", connectToMouse, 500);
-        break;
-
-      case "push_from_mouse":
-        this.addConnectionFunction("connect_all_polys", connectThemPolys, 500);
-        this.addConnectionFunction("push_from_mouse", pushFromMouse, 510);
-        break;        
-
-      case "freeze_under_mouse":
-        this.addConnectionFunction("connect_all_polys", connectThemPolys, 500);
-        this.addConnectionFunction("freeze_under_mouse", freezeUnderMouse, 510);
-        break;
-
-      default:
-        console.error("Connectionmode undefined");
-        return;
-    }
-
-    // braucht man immer
-    this.addConnectionFunction("update_all_polys", updateAllPolys, 1000);
-    this.addConnectionFunction("render_all_polys", drawPolyBalls, 1);
-  }
-
-  calcBlockSize() {
-    this.blocksize_width = Math.round(this.width / this.config.slices);
-    this.blocksize_height = Math.round(this.height / this.config.slices);
-    if (this.blocksize_width <= 0) this.blocksize_width = 1;
-    if (this.blocksize_height <= 0) this.blocksize_height = 1;
-  }
-
-  init(element) {
-    if (!this.findElementToAttachTo(element)) return false;
-    this.loadConnectionFunctions();
-    this.createCanvas();
-    this.calcBlockSize();
-    this.styleParentObject();
-    this.initPolyNetz();
-    console.log("Created Polynetz :)");
-    console.log(this);
-    return true;
-  }
-
-  updateSize() {
-    this.updateCanvas();
-    this.calcBlockSize();
-    // Egal ob Animation gerade aktiv ist update sollte einmal aufgerufen werden
-    this.redraw();
-  }
-
-  redraw() {
-    for (let i = 0; i < this.connection_functions.length; i++) {
-      // Connectionfunction neu ausführen aber nicht die Polys updaten
-      if (this.connection_functions[i].n !== "update_all_polys") {
-        this.connection_functions[i].c.bind(this)();
-      }
-    }
-  }
-
   initPolyNetz() {
     this.poly_netz = new Array(this.blocksize_width);
     for(let i = 0; i < this.poly_netz.length; i++) {
@@ -215,74 +269,6 @@ export default class Polynetz {
       }
     }
     this.grid_size = {width: this.poly_netz.length, height: this.poly_netz[0].length };
-  }
-
-  start() {
-    this.loop.start();
-    //if (this.loop !== null) return;
-    //this.loop = window.requestAnimationFrame(this.update.bind(this));
-  }
-
-  stop() {
-    this.loop.stop();
-    //window.cancelAnimationFrame(this.loop);
-    //clearInterval(this.loop);
-  }
-
-  reset() {
-    let evt = {amount: this.all_polys.length};
-
-    this.all_polys = [];
-    this.all_polys_by_color = {};
-    this.initPolyNetz();
-
-    this.reset_event_callback(evt);
-  }
-
-  addEventlistener(event_name, callback) {
-    if (event_name === "reset") {
-      this.reset_event_callback = callback;
-      return;
-    }
-    // einfach weiter geben
-    this.canvas.addEventListener(event_name, callback);
-  }
-
-  addConnectionFunction(name, function_callback, prio) {
-    prio = prio || 500;
-
-    for (let i = 0; i < this.connection_functions.length; i++) {
-      if (this.connection_functions[i].p < prio) {
-        // Platz gefunden, einfügen
-        this.connection_functions.splice(i, 0, {
-          n: name,
-          c: function_callback,
-          p: prio,
-        });
-        // AUS DER FUNKTION SPRINGEN
-        return;
-      }
-    }
-
-    // Kein insertpunkt gefunden
-    this.connection_functions.push({
-      n: name,
-      c: function_callback,
-      p: prio,
-    });
-  }
-
-  removeConnectionFunction(name) {
-    for (let i = 0; i < this.connection_functions.length; i++) {
-      if (this.connection_functions[i].n === name) {
-        this.connection_functions.splice(i, 1);
-        return;
-      }
-    }
-  }
-
-  getLoadedConnectionFunctions() {
-    return this.connection_functions;
   }
 
   findElementToAttachTo(parent_object) {
@@ -342,6 +328,16 @@ export default class Polynetz {
     });
   }
 
+  styleParentObject() {
+    if (this.config.background_is_gradient) {
+      this.parent_object.style.background = this.config.background_color;
+    } else {
+      this.parent_object.style.backgroundColor = this.config.background_color;
+    }
+  }
+
+  //#endregion
+
   updateCanvas() {
     this.width = this.parent_object.scrollWidth;
     this.height = this.parent_object.scrollHeight;
@@ -351,11 +347,26 @@ export default class Polynetz {
     this.canvas.setAttribute("height", String(this.height));
   }
 
-  styleParentObject() {
-    if (this.config.background_is_gradient) {
-      this.parent_object.style.background = this.config.background_color;
-    } else {
-      this.parent_object.style.backgroundColor = this.config.background_color;
+  calcBlockSize() {
+    this.blocksize_width = Math.round(this.width / this.config.slices);
+    this.blocksize_height = Math.round(this.height / this.config.slices);
+    if (this.blocksize_width <= 0) this.blocksize_width = 1;
+    if (this.blocksize_height <= 0) this.blocksize_height = 1;
+  }
+
+  updateSize() {
+    this.updateCanvas();
+    this.calcBlockSize();
+    // Egal ob Animation gerade aktiv ist update sollte einmal aufgerufen werden
+    this.redraw();
+  }
+
+  redraw() {
+    for (let i = 0; i < this.connection_functions.length; i++) {
+      // Connectionfunction neu ausführen aber nicht die Polys updaten
+      if (this.connection_functions[i].n !== "update_all_polys") {
+        this.connection_functions[i].c.bind(this)();
+      }
     }
   }
 }
