@@ -66,3 +66,11 @@ typings/
 
 # Webpack output
 dist/
+
+bilder/
+
+fonts/
+
+libraries/
+
+siteStyle\.css
