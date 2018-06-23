@@ -68,17 +68,22 @@ export function connectThemPolys() {
       for (let x = left; x < right; x++) {
         for (let poly of this.poly_netz[x][y]) {
           let range = Math.sqrt(Math.pow((poly.location.x - all_polys_poly.location.x), 2) + Math.pow((poly.location.y - all_polys_poly.location.y), 2));
-          if (range < this.config.connection_radius) {
+          if (range < this.config.max_connection_radius) {
             this.ctx.beginPath();
 
             this.ctx.moveTo(all_polys_poly.location.x, all_polys_poly.location.y);
             this.ctx.lineTo(poly.location.x, poly.location.y);
-
-            // Transparenz kalkulieren
-            if (this.config.connection_is_transparent) {
-              this.ctx.strokeStyle = "rgba("+ this.config.connection_color + "," + (1 - range / this.config.connection_radius) + ")";
+            
+            if (range < this.config.connection_radius) {
+              // Komplett füllen
+              this.ctx.strokeStyle = "rgb("+ this.config.connection_color + ")";
             } else {
-              this.ctx.strokeStyle = "rgba("+ this.config.connection_color + ")";
+              // Transparenz kalkulieren
+              if (this.config.connection_is_transparent) {
+                this.ctx.strokeStyle = "rgba("+ this.config.connection_color + "," + (1 - (range - this.config.connection_radius) / (this.config.max_connection_radius - this.config.connection_radius)) + ")";
+              } else {
+                this.ctx.strokeStyle = "rgb("+ this.config.connection_color + ")";
+              }
             }
 
             this.ctx.stroke();
@@ -159,13 +164,8 @@ export function pushFromMouse() {
       for (let poly of this.poly_netz[x][y]) {
         let range = Math.sqrt(Math.pow((poly.location.x - this.mouse_location.x), 2) + Math.pow((poly.location.y - this.mouse_location.y), 2));
         if (range <= this.config.mouse.push_radius) {
-
           poly.location.x -= (poly.velocity.vx * poly.config.speed_multiplikator) * this.config.freeze_multiplier;
-          console.log(this.config.freeze_multiplier);
-          console.log((poly.velocity.vx * poly.config.speed_multiplikator) * this.config.freeze_multiplier)
           poly.location.y -= (poly.velocity.vy * poly.config.speed_multiplikator) * this.config.freeze_multiplier;
-
-
         }
       }
     }
@@ -213,14 +213,23 @@ export function  connectToMouse() {
     for (let x = left; x < right; x++) {
       for (let poly of this.poly_netz[x][y]) {
         let range = Math.sqrt(Math.pow((poly.location.x - this.mouse_location.x), 2) + Math.pow((poly.location.y - this.mouse_location.y), 2));
-        if (this.config.connection_radius > range) {
+        if (range < this.config.max_connection_radius) {
           this.ctx.beginPath();
 
           this.ctx.moveTo(this.mouse_location.x, this.mouse_location.y);
           this.ctx.lineTo(poly.location.x, poly.location.y);
-
-          // Transparenz kalkulieren
-          this.ctx.strokeStyle = "rgba(255,255,255," + (1 - range / this.config.connection_radius) + ")";
+          
+          if (range < this.config.connection_radius) {
+            // Komplett füllen
+            this.ctx.strokeStyle = "rgb("+ this.config.connection_color + ")";
+          } else {
+            // Transparenz kalkulieren
+            if (this.config.connection_is_transparent) {
+              this.ctx.strokeStyle = "rgba("+ this.config.connection_color + "," + (1 - (range - this.config.connection_radius) / (this.config.max_connection_radius - this.config.connection_radius)) + ")";
+            } else {
+              this.ctx.strokeStyle = "rgb("+ this.config.connection_color + ")";
+            }
+          }
 
           this.ctx.stroke();
         }

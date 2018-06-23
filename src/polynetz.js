@@ -222,6 +222,10 @@ export default class Polynetz {
         this.addConnectionFunction("freeze_under_mouse", freezeUnderMouse, 510);
         break;
 
+      case "same_cell":
+        this.addConnectionFunction("freeze_under_mouse", polysConnectInSameCell, 500);
+        break;
+
       case "none": break;
 
       default:
