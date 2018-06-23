@@ -13,6 +13,7 @@ export default class Polynetz {
     this.mouse_location = {x: 0, y: 0}; this.canvas_bounding_rect = {};
 
     this.connection_functions = [];
+    this.randomInt = (max, min = 0) => Math.round(min + (Math.random() * (max - min)));
 
     // Konfiguartion laden
     this.loadConfig(config || {});
@@ -39,6 +40,22 @@ export default class Polynetz {
       this.poly_netz[poly_netz_x][poly_netz_y].push(poly) 
     } else {
       this.poly_netz[poly_netz_x][poly_netz_y] = [poly];
+    }
+  }
+
+
+  removePoly(options) {
+    if (options.random) {
+      if (options.random.amount) {
+        for (let i = 0; i < options.random.amount; i++) {
+          if (this.all_polys.length === 0) break;
+          let random_index = this.randomInt(this.all_polys.length - 1);
+          this.all_polys[random_index].delete();
+        }
+      } else {
+        console.error("No amount spezified");
+        return;
+      }
     }
   }
 
@@ -181,6 +198,7 @@ export default class Polynetz {
     switch (this.config.connection_mode) {
       case "custom":
         return; // bei eigenem connectionMode Nichts machen
+
       case "connect_them_all":
         this.addConnectionFunction("connect_all_polys", connectThemPolys, 500);
         break;
@@ -203,6 +221,8 @@ export default class Polynetz {
         this.addConnectionFunction("connect_all_polys", connectThemPolys, 500);
         this.addConnectionFunction("freeze_under_mouse", freezeUnderMouse, 510);
         break;
+
+      case "none": break;
 
       default:
         console.error("Connectionmode undefined");

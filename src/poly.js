@@ -9,6 +9,19 @@ export default class Poly {
     this.velocity = {vx: Math.random() * 2 - 1,vy: Math.random() * 2 - 1};
   }
 
+  delete() {
+    // Löscht Poly aus allen relevanten Listen
+    // Poly aus komplettliste löschen
+    let all_index = this.polynetz.all_polys.findIndex(poly => poly === this);
+    this.polynetz.all_polys.splice(all_index, 1);
+    // Poly aus Grid löschen
+    let netz_index = this.polynetz.poly_netz[this.grid_location.gx][this.grid_location.gy].findIndex(poly => poly === this);
+    this.polynetz.poly_netz[this.grid_location.gx][this.grid_location.gy].splice(netz_index, 1);
+    // Poly aus allen Farben löschen
+    let color_index = this.polynetz.all_polys_by_color[this.config.color].findIndex(poly => poly === this);
+    this.polynetz.all_polys_by_color[this.config.color].splice(color_index, 1);
+  }
+
   updateGridLocation() {
     let poly_netz_x = Math.floor(this.location.x / this.polynetz.blocksize_width);
     let poly_netz_y = Math.floor(this.location.y / this.polynetz.blocksize_height);
