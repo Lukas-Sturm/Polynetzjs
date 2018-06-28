@@ -329,7 +329,7 @@ export default class Polynetz {
     this.canvas_bounding_rect = this.canvas.getBoundingClientRect();    
 
     // Mousehandler hinzufügen
-    this.canvas.addEventListener("mousemove", evt => {
+    window.addEventListener("mousemove", evt => {
       this.mouse_location.x = evt.clientX - this.canvas_bounding_rect.left;
       this.mouse_location.y = evt.clientY - this.canvas_bounding_rect.top;
     });
