@@ -44,7 +44,7 @@ export default class Polynetz {
   }
 
 
-  removePoly(options) {
+  removePolys(options) {
     if (options.random) {
       if (options.random.amount) {
         for (let i = 0; i < options.random.amount; i++) {
@@ -317,12 +317,12 @@ export default class Polynetz {
 
     // Canvas erstellen Attribute setzen und Context abrufen
     this.canvas = document.createElement("canvas");
-    this.canvas.setAttribute("style", "width: 100%; height: 100%");
-    this.canvas.setAttribute("width", String(this.width));
-    this.canvas.setAttribute("height", String(this.height));
+    this.updateCanvas();
     this.canvas.setAttribute("id", "polynetz_canvas");
     this.ctx = this.canvas.getContext("2d");
-    // Canvas platzieren
+    // Sonst würde das Partenelement Scrollbalken anzeigen
+    this.parent_object.style.overflow = "hidden";
+    // Canvas platzieren    
     this.parent_object.appendChild(this.canvas);
 
     // fürs mausposition errechnen
@@ -363,8 +363,8 @@ export default class Polynetz {
   //#endregion
 
   updateCanvas() {
-    this.width = this.parent_object.scrollWidth;
-    this.height = this.parent_object.scrollHeight;
+    this.width = this.parent_object.clientWidth;
+    this.height = this.parent_object.clientHeight;
 
     // Größe anpassen
     this.canvas.setAttribute("width", String(this.width));
